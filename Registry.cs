@@ -44,9 +44,9 @@ public class Registry : System.Web.UI.Page
                                     _ID, 
                                     _occupation) == 0)
         {
-            bool vRet = false;
-            string vMsg = string.Empty;
-            vRet = Email_PrepareSend(ref vMsg, 
+            bool itWasRegistered = false;
+            string vMessage = string.Empty;
+            itWasRegistered = Email_PrepareSend(ref vMessage, 
                                         _name, 
                                         _lastname, 
                                         _country_origin, 
@@ -58,13 +58,13 @@ public class Registry : System.Web.UI.Page
                                         _other_contact, 
                                         _Email, 
                                         _comments);
-            if (vRet)
+            if (itWasRegistered)
             {
                 lblSuccessful.InnerText = "Registration has been carried out successfully.";
                 CleanFields();
             }
             else
-                lblSuccessful.InnerText = "Error sending mail: " + vMsg;
+                lblSuccessful.InnerText = "Error sending mail: " + vMessage;
         }
     }
 
@@ -146,7 +146,7 @@ public class Registry : System.Web.UI.Page
                                            string comments)
     {
         Msg = string.Empty;
-        bool vRet = false;
+        bool itWasRegistered = false;
 
         try
         {
@@ -162,8 +162,8 @@ public class Registry : System.Web.UI.Page
                                 + "<br/><br/> Best regards</p>";
             var senderMail = System.Configuration.ConfigurationManager.AppSettings.Get("SenderMail");
             var InternalRecipientMail = System.Configuration.ConfigurationManager.AppSettings.Get("InternalRecipientMail");
-            vRet = SendMail(ref Msg == Msg, senderMail, Email, string.Empty, "REGISTER OF ELECTRONIC BILLING PROVIDERS", string.Empty, string.Empty, body_message);
-            if (!vRet)
+            itWasRegistered = SendMail(ref Msg == Msg, senderMail, Email, string.Empty, "REGISTER OF ELECTRONIC BILLING PROVIDERS", string.Empty, string.Empty, body_message);
+            if (!itWasRegistered)
                 return false;
 
             var internal_body_message = "<p style = font-family:Lucida Sans;font-size:11px;><strong>New Participant Registration</strong> <br/><br/>" 
@@ -172,7 +172,7 @@ public class Registry : System.Web.UI.Page
                                         + "Position held in the company: " + occupation + "<br/>" + "Primary Contact Number: " 
                                         + main_contact + "<br/>" + "Other contact number: " + other_contact + "<br/>" + "Email: " 
                                         + Email + "<br/>" + "comments: " + comments + "</p>";
-            vRet = SendMail(ref Msg, 
+            itWasRegistered = SendMail(ref Msg, 
                             senderMail, 
                             InternalRecipientMail, 
                             string.Empty, 
@@ -180,7 +180,7 @@ public class Registry : System.Web.UI.Page
                             string.Empty, 
                             string.Empty, 
                             internal_body_message);
-            if (!vRet)
+            if (!itWasRegistered)
                 return false;
         }
         catch (Exception ex)
@@ -190,7 +190,7 @@ public class Registry : System.Web.UI.Page
         }
         return true;
     }
-    private bool SendMail(ref string Msg, string de, string para, string cc, string matter, string atacha_text, string atacha_bin, string Message)
+    private bool SendMail(ref string Msg, string from, string to, string cc, string matter, string atacha_text, string atacha_bin, string Message)
     {
         Msg = string.Empty;
 
@@ -201,9 +201,9 @@ public class Registry : System.Web.UI.Page
             conn = new OracleConnection(connstr);
             conn.Open();
 
-            OracleParameter p_de = new OracleParameter("ENVIA", OracleDbType.Varchar2, de, ParameterDirection.Input);
-            OracleParameter p_para = new OracleParameter("DESTINO", OracleDbType.Varchar2, para, ParameterDirection.Input);
-            OracleParameter p_cc = new OracleParameter("COPIA", OracleDbType.Varchar2, cc, ParameterDirection.Input);
+            OracleParameter p_from = new OracleParameter("SEND", OracleDbType.Varchar2, from, ParameterDirection.Input);
+            OracleParameter p_to = new OracleParameter("DESTINY", OracleDbType.Varchar2, to, ParameterDirection.Input);
+            OracleParameter p_cc = new OracleParameter("COPY", OracleDbType.Varchar2, cc, ParameterDirection.Input);
             OracleParameter p_matter = new OracleParameter("MATTER", OracleDbType.Varchar2, matter, ParameterDirection.Input);
             OracleParameter p_atacha_text = new OracleParameter("ATACHA_TEX", OracleDbType.Varchar2, atacha_text, ParameterDirection.Input);
             OracleParameter p_atacha_bin = new OracleParameter("ATACHA_BIN", OracleDbType.Varchar2, atacha_bin, ParameterDirection.Input);
