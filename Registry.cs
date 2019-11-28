@@ -80,7 +80,7 @@ public class Registry : System.Web.UI.Page
                                     string ID, 
                                     string occupation)
     {
-        OracleConnection conn = null/* TODO Change to default(_) if this is not a reference type */;
+        OracleConnection conn = null;
         try
         {
             string connstr = Utilities.Decipher(System.Configuration.ConfigurationManager.ConnectionStrings("ConnectionString").ConnectionString);
