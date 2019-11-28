@@ -13,6 +13,7 @@ using Oracle.DataAccess.Client;
 
 public class Registry : System.Web.UI.Page
 {
+    //When the user presses click, all the methods to send the mail are executed.
     protected void btnSend_Click(object sender, EventArgs e)
     {
         var _name = txtName.Text;
